@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>放大镜</title>
+		<style type="text/css">
+			html,body,p,h1,h2,h3,ul,li,a{
+				margin:0;
+				padding:0;
+				list-style:none;
+				text-decoration:none;
+			}
+			img{
+				display:block;
+			}
+			input,textarea{
+				border:none;
+				outline:none;
+			}
+			.magnifier{
+				margin:100px;
+				
+			}
+				.show{
+					width:400px;
+					height:400px;
+					/*padding:4px;*/
+					border:1px solid lightgray;
+					background:url(img/good1.jpg) no-repeat;
+					background-origin: content-box;
+					background-size:400px 400px;
+					position:relative;
+				}
+					.glass{
+						width:200px;
+						height:200px;
+						background:papayawhip;
+						opacity:0.6;
+						position:absolute;
+						top:0;
+						left:0;
+						cursor:move;
+						display:none;
+					}
+					.magnify{
+						position:absolute;
+						left:410px;
+						top:0;
+						width:400px;
+						height:400px;
+						border:1px solid lightgray;
+						padding:5px;
+						background:url(img/good1.jpg) no-repeat 0px 0px;
+						background-size:800px 800px;
+						display:none;
+					}
+				.imgListWrap{
+					width:408px;
+					height:160px;
+					position:relative;
+					overflow:hidden;
+					margin-top:20px;
+					border:4px solid lightgray;
+				}	
+					.imgList{
+						width:4000px;
+						position:absolute;
+						left:0;
+						top:0;
+					}
+					.imgList:after{
+						content:'';
+						display:block;
+						clear:both;
+						height:0;
+						visibility:hidden;
+					}
+						.imgList li{
+							width: 92px;
+							height:150px;
+							float:left;
+						}
+						.imgList li:nth-child(1){
+							background-image:url(img/good1.jpg);
+							background-size:92px 150px;
+							background-repeat: no-repeat;
+							
+						}
+						.imgList li:nth-child(2){
+							background-image:url(img/good2.jpg);
+							background-size:100px 150px;
+							background-repeat: no-repeat;
+						}
+						.imgList li:nth-child(3){
+							background-image:url(img/good2.jpg);
+							background-size:100px 150px;
+							background-repeat: no-repeat;
+						}
+						.imgList li:nth-child(4){
+							background-image:url(img/good2.jpg);
+							background-size:100px 150px;
+							background-repeat: no-repeat;
+						}
+						.imgList li:last-child{
+							background-image:url(img/good3.jpg);
+							background-size:100px 150px;
+							background-repeat: no-repeat;
+						}
+					span{
+						display:inline-block;
+						width:30px;
+						height:40px;
+						background:#ccc;
+						position:absolute;
+						top:50%;
+						margin-top: -20px;
+						cursor:pointer;
+					}
+					.leftBtn{
+						left:10px;
+					}	
+					.rightBtn{
+						right:10px;
+					}
+		</style>
+	</head>
+	<body>
+		<div class=magnifier>
+			<div class="show">
+				<div class="glass"></div>
+				<div class="magnify"></div>
+			</div>
+			<div class="imgListWrap">
+				<ul class="imgList">
+					<li class="img"></li>
+					<li class="img"></li>
+					<li class="img"></li>
+					<li class="img"></li>
+					<li class="img"></li>
+				</ul>
+				<span class="leftBtn"></span>
+				<span class="rightBtn"></span>
+			</div>
+		</div>
+	</body>
+	<script src="../jd-floor-bar/js/jquery-1.8.3.min.js"></script>
+	<script>
+	//document不能配合使用load；只能和ready配合使用；
+	//window能和ready、load配合使用；
+		$(window).load(function(){
+			
+			//获取元素glass、show的宽高；并给出放大倍数
+			var showW = $('.show').width();
+			var showH = $('.show').height();
+			var glassW = $('.glass').width();
+			var glassH = $('.glass').height();
+			var scale = 2;
+			
+			//hover事件
+			//bind不能绑定hover事件？？
+			
+			$('.show').hover(function(event){
+				$('.magnify').show();
+				
+				$('.show').bind('mousemove',function(event){
+					var glassLeft = event.pageX - $(this).offset().left - glassW/2;
+					var glassTop = event.pageY - $(this).offset().top - glassH/2;
+					
+					//判断左右边界
+					if(glassLeft < 0){
+						glassLeft = 0;
+					} else if(glassLeft > showW - glassW){
+						glassLeft = showW - glassW;
+					}
+					
+					//判断上下边界
+					if(glassTop < 0){
+						glassTop = 0;
+					} else if(glassTop > showH - glassH){
+						glassTop = showH - glassH;
+					}
+					console.log(glassTop);
+					//给glass赋值
+					$('.glass').css({
+						left:glassLeft,
+						top:glassTop
+					}).show();
+					
+					//给放大镜赋值
+					$('.magnify').css({
+						"background-position-x": -glassLeft*scale,
+						"background-position-y": -glassTop*scale
+					});
+				})
+			},function(){
+				//隐藏元素;并解除绑定事件
+				$('.glass').hide();
+				$('.magnify').hide();
+				$('.show').unbind("mousemove");
+			})
+			
+			
+			//下面图片列表事件
+			$('.img').hover(function(){
+				$('.show').css('background-image',$(this).css('background-image'));
+				$('.magnify').css('background-image',$(this).css('background-image'));
+			})
+			
+			
+			//左右点击切换
+			var i = 0;
+			var imgW = $('.img').eq(0).width();
+			$('.leftBtn').bind('click',function(){
+				if($('.imgList').css('left') >= $('.img').length*imgW){
+					$('.imgList').css('left',$('.img').length*imgW);
+				} else if($('.imgList').css('left') <= 0){
+					$('.imgList').css('left',0);
+				} else{
+					$('.imgList').css('left',-(++i)*imgW);
+				}
+				
+			})
+			var j=0;
+			$('.rightBtn').bind('click',function(){
+				if($('.imgList').css('left') >= $('.img').length*imgW){
+					$('.imgList').css('left',$('.img').length*imgW);
+				} else if($('.imgList').css('left') <= 0){
+					$('.imgList').css('left',0);
+				} else{
+					$('.imgList').css('left',(++i)*imgW);
+				}
+			})
+			
+		})
+	</script>
+</html>

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>countTime</title>
+		<style type="text/css">
+			body,html,p{
+				margin: 0;
+				padding:0;
+			}
+			.countTime{
+				margin: 60px auto;
+				text-align:center;
+			}
+			.day{
+				min-width:10px;
+				min-height:10px;
+			}
+			.time{
+				width:20px;
+				height:20px;
+				background-color:#333;
+				color:white;
+				font-size:16px;
+				border-radius:2px;
+				line-height:20px;
+				display: inline-block;
+			}
+			.time-dot{
+				color:black;
+				display:inline-block;
+				line-height:20px;
+				height:20px;
+				margin-top:-4px;
+				vertical-align:middle;				
+			}
+		</style>
+	</head>
+	<body>
+		<div class="countTime">
+			<p>剩余<span id="day">12</span>天</p>
+			<span class="time hour" id="hour">12</span>
+			<b class="time-dot">:</b>
+			<span class="time minute" id="minute">23</span>
+			<b class="time-dot">:</b>
+			<span class="time second" id="second">45</span>
+		</div>
+	</body>
+	<script src="../jd-floor-bar/js/jquery-1.8.3.min.js"></script>
+	<script>
+		var interval = 1000;
+//		$hour = $('#hour');
+//		$minute = $('#minute');
+//		$second = $('#second');
+//		$day = $('#day');
+		//倒计时函数
+		function countTime(year,month,day,obj){
+			var now = new Date();
+			//默认月份为11个月不是12个月
+			var endT = new Date(year,month-1,day);
+			var lastT = endT.getTime() - now.getTime();
+			
+			var seconds = parseInt(lastT/1000)%60;
+			var minutes = parseInt(lastT/1000/60)%60;
+			var hours = parseInt(lastT/1000/60/60)%24;
+			var days = parseInt(lastT/1000/60/60/24);
+			
+			seconds = (seconds < 10)? ('0' + seconds) : seconds;
+			minutes = (minutes < 10)? ('0' + minutes) : minutes;
+			hours = (hours < 10)? ('0'+ hours) : hours;
+			//传入的是id名，需要加上$才是jq对象才能使用jq方法
+//			console.log($(obj.day));
+//			console.log($('#second'));
+			$(obj.second).html(seconds);
+			$(obj.minute).html(minutes);
+			$(obj.hour).text(hours);
+			$(obj.day).text(days);
+		}
+		window.setInterval(function(){countTime(2017,2,6,{day:day,hour:hour,minute:minute,second:second});},interval);
+		
+		
+	</script>
+</html>

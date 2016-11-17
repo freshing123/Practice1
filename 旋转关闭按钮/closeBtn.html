@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>closeBtn</title>
+		<style type="text/css">
+			.close{
+				width:12px;
+				height:12px;
+				margin:0 auto;
+				background:url(img/toolbars1.png) no-repeat;
+				background-position:0px -250px;
+				/*transition和transform的配合使用
+				 *transition会有自动回到原始状态的功能，animation没有，但是transition需要触发事件
+				 *  */
+				transition:transform .25s ease-out 0s;
+				cursor:pointer;
+			}
+			.close:hover{
+				transform:rotate(90deg);
+			}
+			
+		</style>
+	</head>
+	<body>
+		<div class="close"></div>
+	</body>
+</html>
